@@ -43,3 +43,10 @@ weight = 3
 name = "Tags"
 url = "/tags"
 weight = 4
+
+# Render raw html
+# https://stackoverflow.com/questions/63198652/hugo-shortcode-ignored-saying-raw-html-omitted
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
