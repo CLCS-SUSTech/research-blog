@@ -5,10 +5,12 @@ author = "xy"
 draft = true
 +++
 
-傅里叶分析的主要功能是把时域（time domain）信号转换到频域（frequency domain）。翻开高等数学或信号处理的教科书，或者在wikipedia搜索“Fourier transform”，很容易找到这样的公式：
+## 理论
+
+傅里叶分析的主要功能是把时域（time domain）信号转换到频域（frequency domain）。翻开高等数学或信号处理的教科书，或者在维基百科搜索“Fourier transform”，很容易找到这样的公式：
 
 $$
-{\hat {f}}(\xi )=\int _{-\infty }^{\infty }f(x)\ e^{-i2\pi \xi x}\ dx.
+{\hat {f}}(\xi )=\int _{-\infty }^{\infty }f(x)\ e^{-i2\pi \xi x}\ dx.\label{eq:1}\tag{1}
 $$
 
 $f(x)$ 是时域信号，$\hat f(\xi)$描述对应的频域分量。$x$表示时间，$\xi$表示频率；若前者单位为秒 sec，则后者单位为赫兹 Hz。
@@ -27,6 +29,18 @@ f = [1.2, 1.3, 2.0, ..., 0.8, 0.9]
 <!-- <img src="images/img87_2x.png" alt="text" width=60% /> -->
 
 <p align="center">
-    <img src="images/img87_2x.png" alt="text" width=75% />
+    <img src="images/img87_2x.png" alt="text" width=65% />
 </p>
+
+表中左上角象限是适用于我们的需求的——时域和频域均为离散且有限。其中，$x(n)$对应 Eq.(1) 中的时域信号$f(x)$，$X(k)$对应频域表征$\hat{f}(\xi)$。这个公式和维基百科[“离散傅里叶变换”页面](https://en.wikipedia.org/wiki/Discrete_Fourier_transform#)给出的公式 Eq.1 也是一致的：
+
+
+$$
+X_{k}=\sum _{n=0}^{N-1}x_n\cdot e^{-\frac{i\pi}{N}kn}\label{eq:2}\tag{2}
+$$
+
+所以，表中的 $\omega_k$ 即对应 Eq.(2) 中的 $\frac{i\pi}{N}k$，亦即第 $k$ 个频率分量（$k\in [0,1,\dots,N-1]$）。从算法的角度，DFT是将长度为 $N$ 的序列 $\{x_n\}:=x_0,\dots,x_{N-1}$ 转换为*等长*的序列
+
+## Python 实现
+为了统一符号，接下来我们在notebook中都使用小写变量$x$存储时域信号（函数），大写变量$X$表示频域结果。
 
