@@ -7,8 +7,11 @@ date = 2023-08-11
 
 讲座 slides [链接](NLP-and-CogSci.pdf)
 
-![Xu at AI talk](ai_talk_xu.jpeg "Photo by Dr. Feng")
+<p align="center">
+    <img src="ai_talk_xu.jpeg" alt="Photo by Dr. Feng" width=50% />
+</p>
 
+<!-- ![Xu at AI talk](ai_talk_xu.jpeg "Photo by Dr. Feng") -->
 <!--
 <figure>
     <img src="ai_talk_xu.jpeg"
