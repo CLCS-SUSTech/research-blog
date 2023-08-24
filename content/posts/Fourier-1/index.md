@@ -41,6 +41,14 @@ $$
 
 所以，表中的 $\omega_k$ 即对应 Eq.(2) 中的 $\frac{i2\pi}{N}k$，亦即第 $k$ 个频率分量（$k\in [0,1,\dots,N-1]$）。从算法的角度，DFT是将长度为 $N$ 的序列 $\\{x_n\\}:=x_0,x_1,\dots,x_{N-1}$ 转换为**等长**的序列 $\\{X_k\\}:=X_0,X_1,\dots,X_{N-1}$。
 
+注意，这里的 $x_n$ 和 $X_k$ 都是复数（complex number），由实部（Re）和虚部（Im）组成。$X_k$ 可以理解为输入序列 $\\{x_n\\}$ 与频率为 $\frac{k}{N}$ 的复正弦波（complex sinusoid）之间的互相关（cross-correlation），也就是滑动点积或内积（sliding dot-product/inner-product）。从所得的 N 个频率分量 $\\{X_k\\}$ ($k=0,1,\dots,N-1$)，我们可以重建出时域信号：
+
+$$
+x_{n}={\frac {1}{N}}\sum_{k=0}^{N-1}X_{k}\cdot e^{\frac{i2\pi}{N} kn}\label{eq:3}\tag{3}
+$$
+
+当 $n$ 的取值为无限，即 $n\in \mathbb {Z}$ 时，上式就是常说的傅里叶级数（Fourier series）。而当 $n$ 的取值有限，$n\in [0,N-1]$ 时，上式就是所谓的傅里叶逆变换（inverse transform）。Eq. (3) 的含义是，时域信号 $x_n$ 可以分解为 $N$ 个不同频率的正弦曲线（sinusoid）之加和。
+
 ## Python 实现
 为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。
 
