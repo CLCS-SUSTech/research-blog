@@ -1,11 +1,9 @@
 +++
-title = "傅里叶分析（Fourier analysis）基础（1）"
-date = "2023-08-17"
+title = "傅里叶分析（Fourier analysis）基础（1）——理论"
+date = "2023-08-24"
 author = "xy"
-draft = true
 +++
 
-## 理论
 
 傅里叶分析的主要功能是把时域（time domain）信号转换到频域（frequency domain）。翻开高等数学或信号处理的教科书，或者在维基百科搜索“Fourier transform”，很容易找到这样的公式：
 
@@ -47,8 +45,13 @@ $$
 x_{n}={\frac {1}{N}}\sum_{k=0}^{N-1}X_{k}\cdot e^{\frac{i2\pi}{N} kn}\label{eq:3}\tag{3}
 $$
 
-当 $n$ 的取值为无限，即 $n\in \mathbb {Z}$ 时，上式就是常说的傅里叶级数（Fourier series）。而当 $n$ 的取值有限，$n\in [0,N-1]$ 时，上式就是所谓的傅里叶逆变换（inverse transform）。Eq. (3) 的含义是，时域信号 $x_n$ 可以分解为 $N$ 个不同频率的正弦曲线（sinusoid）之加和。
+当 $n$ 的取值为无限，即 $n\in \mathbb {Z}$ 时，上式就是常说的傅里叶级数（Fourier series）。而当 $n$ 的取值有限，$n\in [0,N-1]$ 时，上式就是所谓的傅里叶逆变换（inverse transform）。Eq. (3) 的含义是，时域信号 $x_n$ 可以分解为 $N$ 个不同频率的正弦曲线（sinusoid）之加和，其中第 $k$ 个正弦曲线 $X_k$ 的振幅和相位分别为：
 
-## Python 实现
-为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。
+$$
+|X_{k}|={\sqrt {\operatorname {Re} (X_{k})^{2}+\operatorname {Im} (X_{k})^{2}}}\\\arg(X_{k})=\operatorname {atan2} {\big (}\operatorname {Im} (X_{k}),\operatorname {Re} (X_{k}){\big )}
+$$
 
+所需要的理论基本就是这些，接下来只需找到相应的 Python 包（比如 [scipy.signal.fft](https://docs.scipy.org/doc/scipy/tutorial/fft.html#fast-fourier-transforms)）来开始我们的实验了。
+
+<!-- ## Python 实现
+为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。 -->
