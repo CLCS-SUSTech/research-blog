@@ -53,5 +53,3 @@ $$
 
 所需要的理论基本就是这些，接下来只需找到相应的 Python 包（比如 [scipy.signal.fft](https://docs.scipy.org/doc/scipy/tutorial/fft.html#fast-fourier-transforms)）来开始我们的实验了。
 
-<!-- ## Python 实现
-为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。 -->
