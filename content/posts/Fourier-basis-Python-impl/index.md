@@ -41,8 +41,11 @@ $$
 \omega_1=2\pi\frac{}{12},\ \omega_2=2\pi\frac{2}{12},\ \omega_3=2\pi\frac{3}{12},\ \omega_4=2\pi\frac{4}{12},\ \omega_5=2\pi\frac{5}{12}
 $$
 
-在坐标轴上表示如下：
+在极坐标轴上表示如下（左图为原向量，右图为归一化后的向量）：
 
+<p align="center">
+<img src="images/w0-w5_merged.png" alt="text" width=65% />
+</p>
 
 
 与后 6 个分量 $\\{X_6,X_7,\dots,X_11\\}$ 成共轭（conjugate）关系，即：
