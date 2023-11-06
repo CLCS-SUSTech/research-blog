@@ -5,9 +5,9 @@ author = "xy"
 draft = false
 +++
 
-接着上一篇[《傅里叶分析（Fourier analysis）基础（1）——理论》](../fourier-basis-theory)，我们选取[scipy.signal.fft](https://docs.scipy.org/doc/scipy/tutorial/fft.html#fast-fourier-transforms)）来进行傅里叶分析。
+接着上一篇[《傅里叶分析（Fourier analysis）基础（1）——理论》](../fourier-basis-theory)，我们选取[scipy.fft](https://docs.scipy.org/doc/scipy/tutorial/fft.html#fast-fourier-transforms)）来进行傅里叶分析。
 
-<!-- ## Python 实现 -->
+## 使用 `scipy.fft` 做傅里叶分析
 为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。 
 
 首先定义一段时域长度为 $N$ 的时域信号（$N=12$）：
@@ -19,7 +19,7 @@ draft = false
 array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11])
 ```
 
-接下来，使用`scipy.signal.fft`进行离散傅里叶转换：
+接下来，使用`scipy.fft`进行离散傅里叶转换：
 
 ```console
 >>> from scipy.fft import fft
@@ -82,5 +82,46 @@ $$
 再加上零频率 $X_0$，我们得到了频谱的幅度谱（amplitude spectrum）：
 
 <p align="center">
-<img src="images/X0-X5_ampSpectrum.png" alt="text" width=45% />
+<img src="images/X0-X5_ampSpectrum.png" alt="text" width=35% />
+</p>
+
+## 使用 `fftfreq` 和 `fftshift` 绘制频谱
+上一张频谱图的绘制代码如下：
+
+```python
+from scipy.fft import fftfreq
+xf = fftfreq(N)[:6]
+plt.stem(xf, np.abs(X[:6]), use_line_collection=False)
+```
+
+`fftfreq` 的功能是返回傅里叶变换的频点，这里参数 `N=12` 是我们时域信号的长度，`fftfreq(12)` 返回的是 $[0,1)$ 区间内的12个频率点：
+
+```console
+>>> print(fftfreq(12))
+[ 0.          0.08333333  0.16666667  0.25        0.33333333  0.41666667
+ -0.5        -0.41666667 -0.33333333 -0.25       -0.16666667 -0.08333333]
+>>> print(len(fftfreq(12)))
+12
+```
+前面1-5项是正频率，即 $\omega_1\dots \omega_5$ 的频率系数：$[\frac{1}{12}, \frac{2}{12},\dots,\frac{5}{12}]$. 后面6-11项是负频率（逆序），即 $\omega_{11}\dots \omega_6$ 的系数：$[-\frac{6}{12}, -\frac{5}{6},\dots,-\frac{1}{12}]$。
+
+所以绘图时，可以用 `ffreq(N)[:6]` 语句来只取前6项作为 x 轴坐标。或者用 `fftshift` 将负频率移到前面，和正频率排成按 0 点对称的形式：
+
+```console
+>>> from scipy.fft import fftshift
+>>> xf = fftfreq(12)
+>>> xf = fftshift(xf)
+>>> print(xf)
+[-0.5        -0.41666667 -0.33333333 -0.25       -0.16666667 -0.08333333
+  0.          0.08333333  0.16666667  0.25        0.33333333  0.41666667]
+```
+
+对频率分量 $X$ 也进行相应的 `fftshift`操作后，就可以绘制出包含正、负频率的完整频谱（沿 $y$ 轴对称）：
+```python
+X_plot = fftshift(X)
+plt.stem(xf, np.abs(X_plot), use_line_collection=False)
+```
+
+<p align="center">
+<img src="images/X0-X11_ampSpectrum.png" alt="text" width=55% />
 </p>
