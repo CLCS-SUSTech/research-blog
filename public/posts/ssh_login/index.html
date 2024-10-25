@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/research-blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=research-blog/livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>使用ssh钥匙远程登录Linux服务器 - CLCS实验室研究札记 | CLCS Research Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="第1步：生成ssh公钥和私钥
+在本地电脑（MacOS 或者 Linux）的命令行中使用：
+ssh-keygen
+这样就生成了一对私钥和公钥，其默认存储位置为~/.ssh。该目录下的id_rsa为私钥，id_rsa.pub为公钥。此公钥就是用来远程登录的“钥匙”。
+第2步：将公钥拷贝到远程服务器
+参考此教程 Digital Ocean: How To Configure SSH Key-Based Authentication on a Linux Server。几种方法均可行：
+
+自动拷贝：$ ssh-copy-id username@server_address 将直接把你的 id_rsa.pub 文件内容拷贝到服务器的 ~/.ssh/authorized_keys 文件中。
+半自动拷贝：cat ~/.ssh/id_rsa.pub | ssh username@server_address &quot;mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys&quot;
+手动拷贝：在本地打开 id_rsa.pub 拷贝其内容，用 ssh 远程登录后用文本编辑器新建或者编辑 ~/.ssh/auhtorized_keys，将拷贝内容添加进去。
+
+第3步：登录
+此时在本地打开命令行，远程登录服务器：
+ssh username@server_address
+现在不需要手动输入密码就能直接登录了！" />
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content="http://localhost:1313/research-blog/posts/ssh_login/">
+  <meta property="og:site_name" content="CLCS实验室研究札记 | CLCS Research Blog">
+  <meta property="og:title" content="使用ssh钥匙远程登录Linux服务器">
+  <meta property="og:description" content="第1步：生成ssh公钥和私钥 在本地电脑（MacOS 或者 Linux）的命令行中使用：
+ssh-keygen 这样就生成了一对私钥和公钥，其默认存储位置为~/.ssh。该目录下的id_rsa为私钥，id_rsa.pub为公钥。此公钥就是用来远程登录的“钥匙”。
+第2步：将公钥拷贝到远程服务器 参考此教程 Digital Ocean: How To Configure SSH Key-Based Authentication on a Linux Server。几种方法均可行：
+自动拷贝：$ ssh-copy-id username@server_address 将直接把你的 id_rsa.pub 文件内容拷贝到服务器的 ~/.ssh/authorized_keys 文件中。 半自动拷贝：cat ~/.ssh/id_rsa.pub | ssh username@server_address &#34;mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys&#34; 手动拷贝：在本地打开 id_rsa.pub 拷贝其内容，用 ssh 远程登录后用文本编辑器新建或者编辑 ~/.ssh/auhtorized_keys，将拷贝内容添加进去。 第3步：登录 此时在本地打开命令行，远程登录服务器：
+ssh username@server_address 现在不需要手动输入密码就能直接登录了！">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-08-08T00:00:00+00:00">
+    <meta property="article:modified_time" content="2023-08-08T00:00:00+00:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="使用ssh钥匙远程登录Linux服务器">
+  <meta name="twitter:description" content="第1步：生成ssh公钥和私钥 在本地电脑（MacOS 或者 Linux）的命令行中使用：
+ssh-keygen 这样就生成了一对私钥和公钥，其默认存储位置为~/.ssh。该目录下的id_rsa为私钥，id_rsa.pub为公钥。此公钥就是用来远程登录的“钥匙”。
+第2步：将公钥拷贝到远程服务器 参考此教程 Digital Ocean: How To Configure SSH Key-Based Authentication on a Linux Server。几种方法均可行：
+自动拷贝：$ ssh-copy-id username@server_address 将直接把你的 id_rsa.pub 文件内容拷贝到服务器的 ~/.ssh/authorized_keys 文件中。 半自动拷贝：cat ~/.ssh/id_rsa.pub | ssh username@server_address &#34;mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys&#34; 手动拷贝：在本地打开 id_rsa.pub 拷贝其内容，用 ssh 远程登录后用文本编辑器新建或者编辑 ~/.ssh/auhtorized_keys，将拷贝内容添加进去。 第3步：登录 此时在本地打开命令行，远程登录服务器：
+ssh username@server_address 现在不需要手动输入密码就能直接登录了！">
+<script src="http://localhost:1313/research-blog/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/research-blog/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/research-blog/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/research-blog/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css" media="(prefers-color-scheme: dark)"  />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">CLCS实验室研究札记 | CLCS Research Blog</a>
+	</div>
+	<nav>
+		
+		<a href="/research-blog/">Home</a>
+		
+		<a href="/research-blog/posts">Posts</a>
+		
+		<a href="/research-blog/about">About</a>
+		
+		<a href="/research-blog/tags">Tags</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">使用ssh钥匙远程登录Linux服务器</h1>
+			<div class="meta">Posted on Aug 8, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<h2 id="第1步生成ssh公钥和私钥">第1步：生成ssh公钥和私钥</h2>
+<p>在本地电脑（MacOS 或者 Linux）的命令行中使用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh-keygen
+</span></span></code></pre></div><p>这样就生成了一对私钥和公钥，其默认存储位置为<code>~/.ssh</code>。该目录下的<code>id_rsa</code>为私钥，<code>id_rsa.pub</code>为公钥。此公钥就是用来远程登录的“钥匙”。</p>
+<h2 id="第2步将公钥拷贝到远程服务器">第2步：将公钥拷贝到远程服务器</h2>
+<p>参考此教程 <a href="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server">Digital Ocean: How To Configure SSH Key-Based Authentication on a Linux Server</a>。几种方法均可行：</p>
+<ol>
+<li>自动拷贝：<code>$ ssh-copy-id username@server_address</code> 将直接把你的 id_rsa.pub 文件内容拷贝到服务器的 ~/.ssh/authorized_keys 文件中。</li>
+<li>半自动拷贝：<code>cat ~/.ssh/id_rsa.pub | ssh username@server_address &quot;mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys&quot;</code></li>
+<li>手动拷贝：在本地打开 id_rsa.pub 拷贝其内容，用 ssh 远程登录后用文本编辑器新建或者编辑 ~/.ssh/auhtorized_keys，将拷贝内容添加进去。</li>
+</ol>
+<h2 id="第3步登录">第3步：登录</h2>
+<p>此时在本地打开命令行，远程登录服务器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh username@server_address
+</span></span></code></pre></div><p>现在不需要手动输入密码就能直接登录了！</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+		</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/CLCS-SUSTech" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

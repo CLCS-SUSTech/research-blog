@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/research-blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=research-blog/livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>傅里叶分析（Fourier analysis）基础（2）——Python实现 - CLCS实验室研究札记 | CLCS Research Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="接着上一篇《傅里叶分析（Fourier analysis）基础（1）——理论》，我们选取scipy.fft）来进行傅里叶分析。
+使用 scipy.fft 做傅里叶分析
+为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。
+首先定义一段时域长度为 $N$ 的时域信号（$N=12$）：
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; N = 12
+&gt;&gt;&gt; x = np.arange(N)
+&gt;&gt;&gt; x
+array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11])
+接下来，使用scipy.fft进行离散傅里叶转换：
+&gt;&gt;&gt; from scipy.fft import fft
+&gt;&gt;&gt; X = fft(x)
+&gt;&gt;&gt; X
+array([66. -0.j        , -6.&#43;22.39230485j, -6.&#43;10.39230485j,
+       -6. &#43;6.j        , -6. &#43;3.46410162j, -6. &#43;1.60769515j,
+       -6. -0.j        , -6. -1.60769515j, -6. -3.46410162j,
+       -6. -6.j        , -6.-10.39230485j, -6.-22.39230485j])
+&gt;&gt;&gt; len(X)
+12
+可见，离散傅里叶变换得到的频域表征 $X$ 与时域信号 $x$ 长度相等，$N=12$。每个频率分量 $X_k$ 都是复数，可表示成 $X_k=a&#43;b\cdot j$ 的形式（$k=0,2\dots 11$）。例如，$X_1=-6&#43;22.39j$。" />
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content="http://localhost:1313/research-blog/posts/fourier-basis-python-impl/">
+  <meta property="og:site_name" content="CLCS实验室研究札记 | CLCS Research Blog">
+  <meta property="og:title" content="傅里叶分析（Fourier analysis）基础（2）——Python实现">
+  <meta property="og:description" content="接着上一篇《傅里叶分析（Fourier analysis）基础（1）——理论》，我们选取scipy.fft）来进行傅里叶分析。
+使用 scipy.fft 做傅里叶分析 为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。
+首先定义一段时域长度为 $N$ 的时域信号（$N=12$）：
+&gt;&gt;&gt; import numpy as np &gt;&gt;&gt; N = 12 &gt;&gt;&gt; x = np.arange(N) &gt;&gt;&gt; x array([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) 接下来，使用scipy.fft进行离散傅里叶转换：
+&gt;&gt;&gt; from scipy.fft import fft &gt;&gt;&gt; X = fft(x) &gt;&gt;&gt; X array([66. -0.j , -6.&#43;22.39230485j, -6.&#43;10.39230485j, -6. &#43;6.j , -6. &#43;3.46410162j, -6. &#43;1.60769515j, -6. -0.j , -6. -1.60769515j, -6. -3.46410162j, -6. -6.j , -6.-10.39230485j, -6.-22.39230485j]) &gt;&gt;&gt; len(X) 12 可见，离散傅里叶变换得到的频域表征 $X$ 与时域信号 $x$ 长度相等，$N=12$。每个频率分量 $X_k$ 都是复数，可表示成 $X_k=a&#43;b\cdot j$ 的形式（$k=0,2\dots 11$）。例如，$X_1=-6&#43;22.39j$。">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-08-27T00:00:00+00:00">
+    <meta property="article:modified_time" content="2023-08-27T00:00:00+00:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="傅里叶分析（Fourier analysis）基础（2）——Python实现">
+  <meta name="twitter:description" content="接着上一篇《傅里叶分析（Fourier analysis）基础（1）——理论》，我们选取scipy.fft）来进行傅里叶分析。
+使用 scipy.fft 做傅里叶分析 为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。
+首先定义一段时域长度为 $N$ 的时域信号（$N=12$）：
+&gt;&gt;&gt; import numpy as np &gt;&gt;&gt; N = 12 &gt;&gt;&gt; x = np.arange(N) &gt;&gt;&gt; x array([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) 接下来，使用scipy.fft进行离散傅里叶转换：
+&gt;&gt;&gt; from scipy.fft import fft &gt;&gt;&gt; X = fft(x) &gt;&gt;&gt; X array([66. -0.j , -6.&#43;22.39230485j, -6.&#43;10.39230485j, -6. &#43;6.j , -6. &#43;3.46410162j, -6. &#43;1.60769515j, -6. -0.j , -6. -1.60769515j, -6. -3.46410162j, -6. -6.j , -6.-10.39230485j, -6.-22.39230485j]) &gt;&gt;&gt; len(X) 12 可见，离散傅里叶变换得到的频域表征 $X$ 与时域信号 $x$ 长度相等，$N=12$。每个频率分量 $X_k$ 都是复数，可表示成 $X_k=a&#43;b\cdot j$ 的形式（$k=0,2\dots 11$）。例如，$X_1=-6&#43;22.39j$。">
+<script src="http://localhost:1313/research-blog/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/research-blog/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/research-blog/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/research-blog/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css" media="(prefers-color-scheme: dark)"  />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">CLCS实验室研究札记 | CLCS Research Blog</a>
+	</div>
+	<nav>
+		
+		<a href="/research-blog/">Home</a>
+		
+		<a href="/research-blog/posts">Posts</a>
+		
+		<a href="/research-blog/about">About</a>
+		
+		<a href="/research-blog/tags">Tags</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">傅里叶分析（Fourier analysis）基础（2）——Python实现</h1>
+			<div class="meta">Posted on Aug 27, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<p>接着上一篇<a href="../fourier-basis-theory">《傅里叶分析（Fourier analysis）基础（1）——理论》</a>，我们选取<a href="https://docs.scipy.org/doc/scipy/tutorial/fft.html#fast-fourier-transforms">scipy.fft</a>）来进行傅里叶分析。</p>
+<h2 id="使用-scipyfft-做傅里叶分析">使用 <code>scipy.fft</code> 做傅里叶分析</h2>
+<p>为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。</p>
+<p>首先定义一段时域长度为 $N$ 的时域信号（$N=12$）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>&gt;&gt;&gt; import numpy as np
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; N <span style="color:#f92672">=</span> <span style="color:#ae81ff">12</span>
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; x <span style="color:#f92672">=</span> np.arange<span style="color:#f92672">(</span>N<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; x
+</span></span><span style="display:flex;"><span>array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11])
+</span></span></code></pre></div><p>接下来，使用<code>scipy.fft</code>进行离散傅里叶转换：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>&gt;&gt;&gt; from scipy.fft import fft
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; X <span style="color:#f92672">=</span> fft<span style="color:#f92672">(</span>x<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; X
+</span></span><span style="display:flex;"><span>array([66. -0.j        , -6.+22.39230485j, -6.+10.39230485j,
+</span></span><span style="display:flex;"><span>       -6. +6.j        , -6. +3.46410162j, -6. +1.60769515j,
+</span></span><span style="display:flex;"><span>       -6. -0.j        , -6. -1.60769515j, -6. -3.46410162j,
+</span></span><span style="display:flex;"><span>       -6. -6.j        , -6.-10.39230485j, -6.-22.39230485j])
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; len<span style="color:#f92672">(</span>X<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>12
+</span></span></code></pre></div><p>可见，离散傅里叶变换得到的频域表征 $X$ 与时域信号 $x$ 长度相等，$N=12$。每个频率分量 $X_k$ 都是复数，可表示成 $X_k=a+b\cdot j$ 的形式（$k=0,2\dots 11$）。例如，$X_1=-6+22.39j$。</p>
+<p>其中 $\{X_1,X_2,\dots,X_5\}$ 这 5 个频率分量表示正频率，因其所对应的角频率 $\omega_k=2\pi \frac{k}{N}$ 均在 $[0,\pi)$ 之间：</p>
+<p>$$
+\omega_1=2\pi\frac{1}{12},\ \omega_2=2\pi\frac{2}{12},\ \omega_3=2\pi\frac{3}{12},\ \omega_4=2\pi\frac{4}{12},\ \omega_5=2\pi\frac{5}{12}
+$$</p>
+<p>在极坐标轴上表示如下（左图为原向量，右图为归一化后的向量）：</p>
+<p align="center">
+<img src="images/w0-w5_merged.png" alt="text" width=65% />
+</p>
+<p>$\{X_1,\dots,X_{5}\}$ 与后 5 个负频率分量 $\{X_6,\dots,X_{11}\}$ 成共轭（conjugate）关系，即：</p>
+<p>$$
+X_{k}={\overline {X_{N-k}}}\quad (k=1,2,\dots,N-1)
+$$</p>
+<p>例如，$X_1=-6-22.39j$，$X_{11}=-6+22.39j$，他们的虚部是相反数。所以，$\{X_6,\dots,X_{11}\}$ 画在极坐标中如下。可见，$\{X_6,\dots,X_{11}\}$ 与 $\{X_1,\dots,X_{5}\}$ 的方向沿$x$轴翻转，但是长度相等。之所以左下图中 $w_{11}$（红色虚线）长度比左上图中 $w_{1}$ 看上去更长，是因为黑色水平向量 $w_6$ 的存在（对应 $X_6=-6-0.j$ ）</p>
+<p align="center">
+<img src="images/w6-w11_merged.png" alt="text" width=65% />
+</p>
+<p>为了避免 $X_0$ 和 $X_6$ 带来的混淆，我们将去除二者之后的10个角频率画出来，发现的确正频率（$\{X_1,\dots,X_{5}\}$）和负频率（$\{X_7,\dots,X_{11}\}$）是研 $x$ 轴对称的，如下图：</p>
+<p align="center">
+<img src="images/w1-w11_origin.png" alt="text" width=45% />
+</p>
+<p>综上所述，我们分析频谱时，只需关注正频率（或负频率）一边即可。
+回到上面的例子，5个正频率分量 $X_1$ 到 $X_5$ 分别是：</p>
+<p>$$
+\begin{aligned}
+X_1&amp;=-6+22.39j =&gt; |X_1| = \sqrt{(-6)^2+(22.39)^2} = 23.18\\
+X_2&amp;=-6+10.39j =&gt; |X_2| = \sqrt{-6.00^2 + 10.39^2} = 12.00\\
+X_3&amp;=-6+6j =&gt; |X_3| = \sqrt{-6.00^2 + 6.00^2} = 8.49\\
+X_4&amp;=-6+3.46j \Rightarrow |X_4| = \sqrt{-6.00^2 + 3.46^2} = 6.93 \\
+X_5&amp;=-6+1.61j \Rightarrow |X_5| = \sqrt{-6.00^2 + 1.61^2} = 6.21 \\
+\end{aligned}
+$$</p>
+<p>再加上零频率 $X_0$，我们得到了频谱的幅度谱（amplitude spectrum）：</p>
+<p align="center">
+<img src="images/X0-X5_ampSpectrum.png" alt="text" width=35% />
+</p>
+<h2 id="使用-fftfreq-和-fftshift-绘制频谱">使用 <code>fftfreq</code> 和 <code>fftshift</code> 绘制频谱</h2>
+<p>上一张频谱图的绘制代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> scipy.fft <span style="color:#f92672">import</span> fftfreq
+</span></span><span style="display:flex;"><span>xf <span style="color:#f92672">=</span> fftfreq(N)[:<span style="color:#ae81ff">6</span>]
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>stem(xf, np<span style="color:#f92672">.</span>abs(X[:<span style="color:#ae81ff">6</span>]), use_line_collection<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span></code></pre></div><p><code>fftfreq</code> 的功能是返回傅里叶变换的频点，这里参数 <code>N=12</code> 是我们时域信号的长度，<code>fftfreq(12)</code> 返回的是 $[0,1)$ 区间内的12个频率点：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>&gt;&gt;&gt; print<span style="color:#f92672">(</span>fftfreq<span style="color:#f92672">(</span>12<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>[ 0.          0.08333333  0.16666667  0.25        0.33333333  0.41666667
+</span></span><span style="display:flex;"><span> -0.5        -0.41666667 -0.33333333 -0.25       -0.16666667 -0.08333333]
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; print<span style="color:#f92672">(</span>len<span style="color:#f92672">(</span>fftfreq<span style="color:#f92672">(</span>12<span style="color:#f92672">)))</span>
+</span></span><span style="display:flex;"><span>12
+</span></span></code></pre></div><p>前面1-5项是正频率，即 $\omega_1\dots \omega_5$ 的频率系数：$[\frac{1}{12}, \frac{2}{12},\dots,\frac{5}{12}]$. 后面6-11项是负频率（逆序），即 $\omega_{11}\dots \omega_6$ 的系数：$[-\frac{6}{12}, -\frac{5}{6},\dots,-\frac{1}{12}]$。</p>
+<p>所以绘图时，可以用 <code>ffreq(N)[:6]</code> 语句来只取前6项作为 x 轴坐标。或者用 <code>fftshift</code> 将负频率移到前面，和正频率排成按 0 点对称的形式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>&gt;&gt;&gt; from scipy.fft import fftshift
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; xf <span style="color:#f92672">=</span> fftfreq<span style="color:#f92672">(</span>12<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; xf <span style="color:#f92672">=</span> fftshift<span style="color:#f92672">(</span>xf<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; print<span style="color:#f92672">(</span>xf<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>[-0.5        -0.41666667 -0.33333333 -0.25       -0.16666667 -0.08333333
+</span></span><span style="display:flex;"><span>  0.          0.08333333  0.16666667  0.25        0.33333333  0.41666667]
+</span></span></code></pre></div><p>对频率分量 $X$ 也进行相应的 <code>fftshift</code>操作后，就可以绘制出包含正、负频率的完整频谱（沿 $y$ 轴对称）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X_plot <span style="color:#f92672">=</span> fftshift(X)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>stem(xf, np<span style="color:#f92672">.</span>abs(X_plot), use_line_collection<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span></code></pre></div><p align="center">
+<img src="images/X0-X11_ampSpectrum.png" alt="text" width=55% />
+</p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+		</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/CLCS-SUSTech" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

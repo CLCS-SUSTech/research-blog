@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/research-blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=research-blog/livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>傅里叶分析（Fourier analysis）基础（1）——理论 - CLCS实验室研究札记 | CLCS Research Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="傅里叶分析的主要功能是把时域（time domain）信号转换到频域（frequency domain）。翻开高等数学或信号处理的教科书，或者在维基百科搜索“Fourier transform”，很容易找到这样的公式：
+$$
+{\hat {f}}(\xi )=\int _{-\infty }^{\infty }f(x)\ e^{-i2\pi \xi x}\ dx.\label{eq:1}\tag{1}
+$$
+$f(x)$ 是时域信号，$\hat f(\xi)$描述对应的频域分量。$x$表示时间，$\xi$表示频率；若前者单位为秒 sec，则后者单位为赫兹 Hz。
+但是这里 $f(x)$ 的定义域是无限的连续域，我们很难直接上手研究它。在全民 Jupyter Notebook 的时代，我们希望 $f(x)$是长成这样的：
+f = [1.2, 1.3, 2.0, ..., 0.8, 0.9]
+这样我们就可以把段有限长度的数组作为时域信号，输入给某个实现了傅里叶转换的软件包，就能得到想要的频率分量了——简单而美好。但是为了实现这个美好的愿望，我们必须把问题定义得更明确：用有限领取代 $(-\infty,\infty)$；用加和$\Sigma$取代积分$\int$；… 所以最终我们要采用的方法，并非原本的傅里叶变换，而是其离散模式 Descrete Fourier Transform (DFT)。
+关于为何选取DFT，斯坦福大学音乐与声学计算研究中心 Julius O. Smith III 教授编写的《频谱音频信号处理》（SPECTRAL AUDIO SIGNAL PROCESSING）在线教科书中，提供了非常清晰的指导（原文链接）：
+
+
+
+    
+
+表中左上角象限是适用于我们的需求的——时域和频域均为离散且有限。其中，$x(n)$对应 Eq.(1) 中的时域信号$f(x)$，$X(k)$对应频域表征$\hat{f}(\xi)$。这个公式和维基百科“离散傅里叶变换”页面给出的公式 Eq.1 也是一致的：
+$$
+X_{k}=\sum _{n=0}^{N-1}x_n\cdot e^{-\frac{i2\pi}{N}kn}\label{eq:2}\tag{2}
+$$" />
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content="http://localhost:1313/research-blog/posts/fourier-basis-theory/">
+  <meta property="og:site_name" content="CLCS实验室研究札记 | CLCS Research Blog">
+  <meta property="og:title" content="傅里叶分析（Fourier analysis）基础（1）——理论">
+  <meta property="og:description" content="傅里叶分析的主要功能是把时域（time domain）信号转换到频域（frequency domain）。翻开高等数学或信号处理的教科书，或者在维基百科搜索“Fourier transform”，很容易找到这样的公式：
+$$ {\hat {f}}(\xi )=\int _{-\infty }^{\infty }f(x)\ e^{-i2\pi \xi x}\ dx.\label{eq:1}\tag{1} $$
+$f(x)$ 是时域信号，$\hat f(\xi)$描述对应的频域分量。$x$表示时间，$\xi$表示频率；若前者单位为秒 sec，则后者单位为赫兹 Hz。
+但是这里 $f(x)$ 的定义域是无限的连续域，我们很难直接上手研究它。在全民 Jupyter Notebook 的时代，我们希望 $f(x)$是长成这样的：
+f = [1.2, 1.3, 2.0, ..., 0.8, 0.9] 这样我们就可以把段有限长度的数组作为时域信号，输入给某个实现了傅里叶转换的软件包，就能得到想要的频率分量了——简单而美好。但是为了实现这个美好的愿望，我们必须把问题定义得更明确：用有限领取代 $(-\infty,\infty)$；用加和$\Sigma$取代积分$\int$；… 所以最终我们要采用的方法，并非原本的傅里叶变换，而是其离散模式 Descrete Fourier Transform (DFT)。
+关于为何选取DFT，斯坦福大学音乐与声学计算研究中心 Julius O. Smith III 教授编写的《频谱音频信号处理》（SPECTRAL AUDIO SIGNAL PROCESSING）在线教科书中，提供了非常清晰的指导（原文链接）：
+表中左上角象限是适用于我们的需求的——时域和频域均为离散且有限。其中，$x(n)$对应 Eq.(1) 中的时域信号$f(x)$，$X(k)$对应频域表征$\hat{f}(\xi)$。这个公式和维基百科“离散傅里叶变换”页面给出的公式 Eq.1 也是一致的：
+$$ X_{k}=\sum _{n=0}^{N-1}x_n\cdot e^{-\frac{i2\pi}{N}kn}\label{eq:2}\tag{2} $$">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-08-24T00:00:00+00:00">
+    <meta property="article:modified_time" content="2023-08-24T00:00:00+00:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="傅里叶分析（Fourier analysis）基础（1）——理论">
+  <meta name="twitter:description" content="傅里叶分析的主要功能是把时域（time domain）信号转换到频域（frequency domain）。翻开高等数学或信号处理的教科书，或者在维基百科搜索“Fourier transform”，很容易找到这样的公式：
+$$ {\hat {f}}(\xi )=\int _{-\infty }^{\infty }f(x)\ e^{-i2\pi \xi x}\ dx.\label{eq:1}\tag{1} $$
+$f(x)$ 是时域信号，$\hat f(\xi)$描述对应的频域分量。$x$表示时间，$\xi$表示频率；若前者单位为秒 sec，则后者单位为赫兹 Hz。
+但是这里 $f(x)$ 的定义域是无限的连续域，我们很难直接上手研究它。在全民 Jupyter Notebook 的时代，我们希望 $f(x)$是长成这样的：
+f = [1.2, 1.3, 2.0, ..., 0.8, 0.9] 这样我们就可以把段有限长度的数组作为时域信号，输入给某个实现了傅里叶转换的软件包，就能得到想要的频率分量了——简单而美好。但是为了实现这个美好的愿望，我们必须把问题定义得更明确：用有限领取代 $(-\infty,\infty)$；用加和$\Sigma$取代积分$\int$；… 所以最终我们要采用的方法，并非原本的傅里叶变换，而是其离散模式 Descrete Fourier Transform (DFT)。
+关于为何选取DFT，斯坦福大学音乐与声学计算研究中心 Julius O. Smith III 教授编写的《频谱音频信号处理》（SPECTRAL AUDIO SIGNAL PROCESSING）在线教科书中，提供了非常清晰的指导（原文链接）：
+表中左上角象限是适用于我们的需求的——时域和频域均为离散且有限。其中，$x(n)$对应 Eq.(1) 中的时域信号$f(x)$，$X(k)$对应频域表征$\hat{f}(\xi)$。这个公式和维基百科“离散傅里叶变换”页面给出的公式 Eq.1 也是一致的：
+$$ X_{k}=\sum _{n=0}^{N-1}x_n\cdot e^{-\frac{i2\pi}{N}kn}\label{eq:2}\tag{2} $$">
+<script src="http://localhost:1313/research-blog/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/research-blog/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/research-blog/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/research-blog/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css" media="(prefers-color-scheme: dark)"  />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">CLCS实验室研究札记 | CLCS Research Blog</a>
+	</div>
+	<nav>
+		
+		<a href="/research-blog/">Home</a>
+		
+		<a href="/research-blog/posts">Posts</a>
+		
+		<a href="/research-blog/about">About</a>
+		
+		<a href="/research-blog/tags">Tags</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">傅里叶分析（Fourier analysis）基础（1）——理论</h1>
+			<div class="meta">Posted on Aug 24, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<p>傅里叶分析的主要功能是把时域（time domain）信号转换到频域（frequency domain）。翻开高等数学或信号处理的教科书，或者在维基百科搜索“Fourier transform”，很容易找到这样的公式：</p>
+<p>$$
+{\hat {f}}(\xi )=\int _{-\infty }^{\infty }f(x)\ e^{-i2\pi \xi x}\ dx.\label{eq:1}\tag{1}
+$$</p>
+<p>$f(x)$ 是时域信号，$\hat f(\xi)$描述对应的频域分量。$x$表示时间，$\xi$表示频率；若前者单位为秒 sec，则后者单位为赫兹 Hz。</p>
+<p>但是这里 $f(x)$ 的定义域是无限的连续域，我们很难直接上手研究它。在全民 Jupyter Notebook 的时代，我们希望 $f(x)$是长成这样的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>f = [1.2, 1.3, 2.0, ..., 0.8, 0.9]
+</span></span></code></pre></div><p>这样我们就可以把段有限长度的数组作为时域信号，输入给某个实现了傅里叶转换的软件包，就能得到想要的频率分量了——简单而美好。但是为了实现这个美好的愿望，我们必须把问题定义得更明确：用有限领取代 $(-\infty,\infty)$；用加和$\Sigma$取代积分$\int$；… 所以最终我们要采用的方法，并非原本的傅里叶变换，而是其离散模式 Descrete Fourier Transform (DFT)。</p>
+<p>关于为何选取DFT，斯坦福大学音乐与声学计算研究中心 Julius O. Smith III 教授编写的《频谱音频信号处理》（SPECTRAL AUDIO SIGNAL PROCESSING）在线教科书中，提供了非常清晰的指导（<a href="https://ccrma.stanford.edu/~jos/sasp/Fourier_Transforms_Continuous_Discrete_Time_Frequency.html">原文链接</a>）：</p>
+<!-- ![Resize](images/img87_2x.png) -->
+<!-- <img src="images/img87_2x.png" alt="text" width=60% /> -->
+<p align="center">
+    <img src="images/img87_2x.png" alt="text" width=65% />
+</p>
+<p>表中左上角象限是适用于我们的需求的——时域和频域均为离散且有限。其中，$x(n)$对应 Eq.(1) 中的时域信号$f(x)$，$X(k)$对应频域表征$\hat{f}(\xi)$。这个公式和维基百科<a href="https://en.wikipedia.org/wiki/Discrete_Fourier_transform#">“离散傅里叶变换”页面</a>给出的公式 Eq.1 也是一致的：</p>
+<p>$$
+X_{k}=\sum _{n=0}^{N-1}x_n\cdot e^{-\frac{i2\pi}{N}kn}\label{eq:2}\tag{2}
+$$</p>
+<p>所以，表中的 $\omega_k$ 即对应 Eq.(2) 中的 $\frac{i2\pi}{N}k$，亦即第 $k$ 个频率分量（$k\in [0,1,\dots,N-1]$）。从算法的角度，DFT是将长度为 $N$ 的序列 $\{x_n\}:=x_0,x_1,\dots,x_{N-1}$ 转换为<strong>等长</strong>的序列 $\{X_k\}:=X_0,X_1,\dots,X_{N-1}$。</p>
+<p>注意，这里的 $x_n$ 和 $X_k$ 都是复数（complex number），由实部（Re）和虚部（Im）组成。$X_k$ 可以理解为输入序列 $\{x_n\}$ 与频率为 $\frac{k}{N}$ 的复正弦波（complex sinusoid）之间的互相关（cross-correlation），也就是滑动点积或内积（sliding dot-product/inner-product）。从所得的 N 个频率分量 $\{X_k\}$ ($k=0,1,\dots,N-1$)，我们可以重建出时域信号：</p>
+<p>$$
+x_{n}={\frac {1}{N}}\sum_{k=0}^{N-1}X_{k}\cdot e^{\frac{i2\pi}{N} kn}\label{eq:3}\tag{3}
+$$</p>
+<p>当 $n$ 的取值为无限，即 $n\in \mathbb {Z}$ 时，上式就是常说的傅里叶级数（Fourier series）。而当 $n$ 的取值有限，$n\in [0,N-1]$ 时，上式就是所谓的傅里叶逆变换（inverse transform）。Eq. (3) 的含义是，时域信号 $x_n$ 可以分解为 $N$ 个不同频率的正弦曲线（sinusoid）之加和，其中第 $k$ 个正弦曲线 $X_k$ 的振幅和相位分别为：</p>
+<p>$$
+|X_{k}|={\sqrt {\operatorname {Re} (X_{k})^{2}+\operatorname {Im} (X_{k})^{2}}}\\arg(X_{k})=\operatorname {atan2} {\big (}\operatorname {Im} (X_{k}),\operatorname {Re} (X_{k}){\big )}
+$$</p>
+<p>所需要的理论基本就是这些，接下来只需找到相应的 Python 包（比如 <a href="https://docs.scipy.org/doc/scipy/tutorial/fft.html#fast-fourier-transforms">scipy.signal.fft</a>）来开始我们的实验了。</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+		</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/CLCS-SUSTech" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

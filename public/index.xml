@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CLCS实验室研究札记 | CLCS Research Blog</title>
+    <link>http://localhost:1313/research-blog/</link>
+    <description>Recent content on CLCS实验室研究札记 | CLCS Research Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 25 Oct 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/research-blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>句子长度递减：大模型生成文本的有趣发现</title>
+      <link>http://localhost:1313/research-blog/posts/sent-length/</link>
+      <pubDate>Fri, 25 Oct 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/sent-length/</guid>
+      <description>&lt;p&gt;我们在最近的一项工作中发现，大模型生成文本的长度有随句子位置递减的趋势——且这一趋势与人类文本有所不同。&lt;/p&gt;&#xA;&lt;p&gt;简单来说，在文档（wiki）、新闻（news）这类“正经”的文本上，人类“手写”文本的句子长度变化比较&lt;em&gt;平缓&lt;/em&gt;，模型生成文本的句子长度的变化则较&lt;em&gt;陡峭&lt;/em&gt;。&lt;/p&gt;&#xA;&lt;p align=&#34;center&#34;&gt;&#xA;&lt;img src=&#34;images/sl_vs_pos_wiki_en_zh_sid50.png&#34; alt=&#34;text&#34; width=95% /&gt;&#xA;&lt;/p&gt;&#xA;&lt;p align=&#34;center&#34;&gt;&#xA;&lt;img src=&#34;images/sl_vs_pos_news_en_zh_sid50.png&#34; alt=&#34;text&#34; width=95% /&gt;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;但是在小说（novel）类文本上，人类与模型没有明显差别：句子长度均呈陡峭的&lt;strong&gt;下降&lt;/strong&gt;趋势。&lt;/p&gt;&#xA;&lt;p align=&#34;center&#34;&gt;&#xA;&lt;img src=&#34;images/sl_vs_pos_novel_en_zh_sid50.png&#34; alt=&#34;text&#34; width=95% /&gt;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;或许，对撰写 wiki 文档这种知识专业性较强的写作任务，大脑的工作负荷较为均衡，因而句子长度更加一致；而在小说创作这种需要创意的“轻松”的任务，我们更倾向于偷懒——越写越短 :-)&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>傅里叶分析（Fourier analysis）基础（2）——Python实现</title>
+      <link>http://localhost:1313/research-blog/posts/fourier-basis-python-impl/</link>
+      <pubDate>Sun, 27 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/fourier-basis-python-impl/</guid>
+      <description>&lt;p&gt;接着上一篇&lt;a href=&#34;../fourier-basis-theory&#34;&gt;《傅里叶分析（Fourier analysis）基础（1）——理论》&lt;/a&gt;，我们选取&lt;a href=&#34;https://docs.scipy.org/doc/scipy/tutorial/fft.html#fast-fourier-transforms&#34;&gt;scipy.fft&lt;/a&gt;）来进行傅里叶分析。&lt;/p&gt;&#xA;&lt;h2 id=&#34;使用-scipyfft-做傅里叶分析&#34;&gt;使用 &lt;code&gt;scipy.fft&lt;/code&gt; 做傅里叶分析&lt;/h2&gt;&#xA;&lt;p&gt;为了统一符号，接下来我们在notebook中都使用小写变量 $x$ 表示时域信号（函数），大写变量 $X$ 表示频域表征。&lt;/p&gt;&#xA;&lt;p&gt;首先定义一段时域长度为 $N$ 的时域信号（$N=12$）：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt; import numpy as np&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt; N &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt; x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np.arange&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;N&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt; x&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11])&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接下来，使用&lt;code&gt;scipy.fft&lt;/code&gt;进行离散傅里叶转换：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt; from scipy.fft import fft&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt; X &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fft&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt; X&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;array([66. -0.j        , -6.+22.39230485j, -6.+10.39230485j,&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       -6. +6.j        , -6. +3.46410162j, -6. +1.60769515j,&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       -6. -0.j        , -6. -1.60769515j, -6. -3.46410162j,&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       -6. -6.j        , -6.-10.39230485j, -6.-22.39230485j])&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;gt;&amp;gt;&amp;gt; len&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;X&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;12&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可见，离散傅里叶变换得到的频域表征 $X$ 与时域信号 $x$ 长度相等，$N=12$。每个频率分量 $X_k$ 都是复数，可表示成 $X_k=a+b\cdot j$ 的形式（$k=0,2\dots 11$）。例如，$X_1=-6+22.39j$。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>傅里叶分析（Fourier analysis）基础（1）——理论</title>
+      <link>http://localhost:1313/research-blog/posts/fourier-basis-theory/</link>
+      <pubDate>Thu, 24 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/fourier-basis-theory/</guid>
+      <description>&lt;p&gt;傅里叶分析的主要功能是把时域（time domain）信号转换到频域（frequency domain）。翻开高等数学或信号处理的教科书，或者在维基百科搜索“Fourier transform”，很容易找到这样的公式：&lt;/p&gt;&#xA;&lt;p&gt;$$&#xA;{\hat {f}}(\xi )=\int _{-\infty }^{\infty }f(x)\ e^{-i2\pi \xi x}\ dx.\label{eq:1}\tag{1}&#xA;$$&lt;/p&gt;&#xA;&lt;p&gt;$f(x)$ 是时域信号，$\hat f(\xi)$描述对应的频域分量。$x$表示时间，$\xi$表示频率；若前者单位为秒 sec，则后者单位为赫兹 Hz。&lt;/p&gt;&#xA;&lt;p&gt;但是这里 $f(x)$ 的定义域是无限的连续域，我们很难直接上手研究它。在全民 Jupyter Notebook 的时代，我们希望 $f(x)$是长成这样的：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;f = [1.2, 1.3, 2.0, ..., 0.8, 0.9]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样我们就可以把段有限长度的数组作为时域信号，输入给某个实现了傅里叶转换的软件包，就能得到想要的频率分量了——简单而美好。但是为了实现这个美好的愿望，我们必须把问题定义得更明确：用有限领取代 $(-\infty,\infty)$；用加和$\Sigma$取代积分$\int$；… 所以最终我们要采用的方法，并非原本的傅里叶变换，而是其离散模式 Descrete Fourier Transform (DFT)。&lt;/p&gt;&#xA;&lt;p&gt;关于为何选取DFT，斯坦福大学音乐与声学计算研究中心 Julius O. Smith III 教授编写的《频谱音频信号处理》（SPECTRAL AUDIO SIGNAL PROCESSING）在线教科书中，提供了非常清晰的指导（&lt;a href=&#34;https://ccrma.stanford.edu/~jos/sasp/Fourier_Transforms_Continuous_Discrete_Time_Frequency.html&#34;&gt;原文链接&lt;/a&gt;）：&lt;/p&gt;&#xA;&lt;!-- ![Resize](images/img87_2x.png) --&gt;&#xA;&lt;!-- &lt;img src=&#34;images/img87_2x.png&#34; alt=&#34;text&#34; width=60% /&gt; --&gt;&#xA;&lt;p align=&#34;center&#34;&gt;&#xA;    &lt;img src=&#34;images/img87_2x.png&#34; alt=&#34;text&#34; width=65% /&gt;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;表中左上角象限是适用于我们的需求的——时域和频域均为离散且有限。其中，$x(n)$对应 Eq.(1) 中的时域信号$f(x)$，$X(k)$对应频域表征$\hat{f}(\xi)$。这个公式和维基百科&lt;a href=&#34;https://en.wikipedia.org/wiki/Discrete_Fourier_transform#&#34;&gt;“离散傅里叶变换”页面&lt;/a&gt;给出的公式 Eq.1 也是一致的：&lt;/p&gt;&#xA;&lt;p&gt;$$&#xA;X_{k}=\sum _{n=0}^{N-1}x_n\cdot e^{-\frac{i2\pi}{N}kn}\label{eq:2}\tag{2}&#xA;$$&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>AI与中小学教育讲座 - 2023年7月</title>
+      <link>http://localhost:1313/research-blog/posts/ai-education-2023/</link>
+      <pubDate>Fri, 11 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/ai-education-2023/</guid>
+      <description>&lt;h1 id=&#34;题目自然语言理解与认知科学发展&#34;&gt;题目：自然语言理解与认知科学发展&lt;/h1&gt;&#xA;&lt;p&gt;时间：2023年7月4日，7月9日。地点：南方科技大学会议中心一楼音乐厅。&lt;/p&gt;&#xA;&lt;p&gt;讲座 slides &lt;a href=&#34;NLP-and-CogSci.pdf&#34;&gt;链接&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p align=&#34;center&#34;&gt;&#xA;    &lt;img src=&#34;ai_talk_xu.jpeg&#34; alt=&#34;Photo by Dr. Feng&#34; width=50% /&gt;&#xA;&lt;/p&gt;&#xA;&lt;!-- ![Xu at AI talk](ai_talk_xu.jpeg &#34;Photo by Dr. Feng&#34;) --&gt;&#xA;&lt;!--&#xA;&lt;figure&gt;&#xA;    &lt;img src=&#34;ai_talk_xu.jpeg&#34;&#xA;         alt=&#34;Xu&#34; at AI talk&#34;&#xA;         width=&#34;600&#34;&gt;&#xA;    &lt;figcaption&gt;Photograph by Dr. Feng Xueqi&lt;/figcaption&gt;&#xA;&lt;/figure&gt;&#xA;--&gt;</description>
+    </item>
+    <item>
+      <title>使用ssh钥匙远程登录Linux服务器</title>
+      <link>http://localhost:1313/research-blog/posts/ssh_login/</link>
+      <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/ssh_login/</guid>
+      <description>&lt;h2 id=&#34;第1步生成ssh公钥和私钥&#34;&gt;第1步：生成ssh公钥和私钥&lt;/h2&gt;&#xA;&lt;p&gt;在本地电脑（MacOS 或者 Linux）的命令行中使用：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ssh-keygen&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样就生成了一对私钥和公钥，其默认存储位置为&lt;code&gt;~/.ssh&lt;/code&gt;。该目录下的&lt;code&gt;id_rsa&lt;/code&gt;为私钥，&lt;code&gt;id_rsa.pub&lt;/code&gt;为公钥。此公钥就是用来远程登录的“钥匙”。&lt;/p&gt;&#xA;&lt;h2 id=&#34;第2步将公钥拷贝到远程服务器&#34;&gt;第2步：将公钥拷贝到远程服务器&lt;/h2&gt;&#xA;&lt;p&gt;参考此教程 &lt;a href=&#34;https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server&#34;&gt;Digital Ocean: How To Configure SSH Key-Based Authentication on a Linux Server&lt;/a&gt;。几种方法均可行：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;自动拷贝：&lt;code&gt;$ ssh-copy-id username@server_address&lt;/code&gt; 将直接把你的 id_rsa.pub 文件内容拷贝到服务器的 ~/.ssh/authorized_keys 文件中。&lt;/li&gt;&#xA;&lt;li&gt;半自动拷贝：&lt;code&gt;cat ~/.ssh/id_rsa.pub | ssh username@server_address &amp;quot;mkdir -p ~/.ssh &amp;amp;&amp;amp; cat &amp;gt;&amp;gt; ~/.ssh/authorized_keys&amp;quot;&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;手动拷贝：在本地打开 id_rsa.pub 拷贝其内容，用 ssh 远程登录后用文本编辑器新建或者编辑 ~/.ssh/auhtorized_keys，将拷贝内容添加进去。&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;第3步登录&#34;&gt;第3步：登录&lt;/h2&gt;&#xA;&lt;p&gt;此时在本地打开命令行，远程登录服务器：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ssh username@server_address&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在不需要手动输入密码就能直接登录了！&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>配置Linux服务器开发环境 -- zsh</title>
+      <link>http://localhost:1313/research-blog/posts/dev_zsh/</link>
+      <pubDate>Mon, 07 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/dev_zsh/</guid>
+      <description>&lt;h2 id=&#34;1-install-zsh&#34;&gt;1. Install zsh&lt;/h2&gt;</description>
+    </item>
+    <item>
+      <title>关于 | About</title>
+      <link>http://localhost:1313/research-blog/about/</link>
+      <pubDate>Fri, 02 Jun 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/about/</guid>
+      <description>&lt;p&gt;此网站使用目的为南方科技大学&lt;strong&gt;计算语言学与意識科学实验室&lt;/strong&gt;研究札记&lt;/p&gt;&#xA;&lt;p&gt;This website is for hosting the research blogs for Computational Linguistics and Consciousness Science (CLCS) Lab&lt;/p&gt;&#xA;&lt;p&gt;对外网站：&lt;a href=&#34;https://clcs-sustech.github.io/&#34;&gt;https://clcs-sustech.github.io/&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Math Symbol Support Test</title>
+      <link>http://localhost:1313/research-blog/posts/math-symbols-test/</link>
+      <pubDate>Fri, 06 Jan 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/math-symbols-test/</guid>
+      <description>&lt;h1 id=&#34;inline-math&#34;&gt;Inline Math&lt;/h1&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;$(a+b)^2$ = $a^2 + 2ab + b^2$&lt;/li&gt;&#xA;&lt;li&gt;A polynomial P of degree d over $\mathbb{F}_p$ is an expression of the form&#xA;$P(s) = a_0 + a_1 . s + a_2 . s^2 + &amp;hellip; + a_d . s^d$ for some&#xA;$a_0,..,a_d \in \mathbb{F}_p$&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h1 id=&#34;displayed-math&#34;&gt;Displayed Math&lt;/h1&gt;&#xA;&lt;p&gt;$$&#xA;p := (\sum_{k∈I}{c_k.v_k} + \delta_v.t(x))·(\sum_{k∈I}{c_k.w_k} + \delta_w.t(x)) − (\sum_{k∈I}{c_k.y_k} + \delta_y.t(x))&#xA;$$&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Table of Contents Test</title>
+      <link>http://localhost:1313/research-blog/posts/table-of-contents/</link>
+      <pubDate>Sun, 02 Jan 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/table-of-contents/</guid>
+      <description>&lt;h1 id=&#34;heading-1&#34;&gt;Heading 1&lt;/h1&gt;&#xA;&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mollis augue, vel efficitur lacus. Pellentesque eu egestas mi. Etiam ultrices lectus sit amet aliquet ullamcorper. Praesent in erat quis est sagittis finibus. Etiam nec sapien in nulla interdum faucibus. Integer iaculis lorem quis arcu lobortis, non malesuada neque vehicula. Aenean nec tellus eu metus bibendum tempus. Sed rutrum urna ut commodo tempor. Vestibulum aliquet elit posuere turpis maximus condimentum. Sed urna libero, ornare eu tellus vitae, laoreet condimentum risus. Aenean elit lectus, mattis quis nibh nec, faucibus rutrum sapien. Sed iaculis consectetur mi, eget posuere turpis finibus et.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Markdown Test</title>
+      <link>http://localhost:1313/research-blog/posts/markdown/</link>
+      <pubDate>Sat, 01 Jan 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/research-blog/posts/markdown/</guid>
+      <description>&lt;h2 id=&#34;code-block&#34;&gt;Code Block&lt;/h2&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;() {&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    println!(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Hello World&amp;#34;&lt;/span&gt;);&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;quote&#34;&gt;Quote&lt;/h2&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;Two things are infinite: the universe and human stupidity; and I&amp;rsquo;m not sure about the universe.&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Albert Einstein&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;code-tags&#34;&gt;Code tags&lt;/h2&gt;&#xA;&lt;p&gt;Lorem ipsum &lt;code&gt;dolor&lt;/code&gt; sit amet, &lt;code&gt;consectetur adipiscing&lt;/code&gt; elit.&#xA;&lt;code&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/code&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
