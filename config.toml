@@ -20,15 +20,17 @@ pagination.pagerSize = 5 # articles per page
 
 	[params.giscus]
 		# Giscus configuration: visit https://giscus.app to generate repoId, categoryId, etc.
-		repo = ""
-		repoId = ""
+		repo = "CLCS-SUSTech/research-blog"
+		repoId = "R_kgDOKGA1ow"
 		category = "Announcements"
-		categoryId = ""
+		categoryId = "DIC_kwDOKGA1o84C_Lat"
 		mapping = "pathname"
+		strict = "0"
 		reactionsEnabled = "1"
 		emitMetadata = "0"
-		theme = "preferred_color_scheme"
-		lang = "zh-CN"
+		inputPosition = "bottom"
+		theme = "light"
+		lang = "en"
 		loading = "lazy"
 
 [[params.social]]
